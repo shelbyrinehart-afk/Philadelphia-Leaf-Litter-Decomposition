@@ -1,0 +1,512 @@
+pred_rooibos <- predict(fit_rooibos, type = "link", se.fit = TRUE)
+teabags5_rooibos$pred    <- exp(pred_rooibos$fit)
+teabags5_rooibos$CI_lwr  <- exp(pred_rooibos$fit - crit * pred_rooibos$se.fit)
+teabags5_rooibos$CI_upr  <- exp(pred_rooibos$fit + crit * pred_rooibos$se.fit)
+teabags5_rooibosplot<-subset(teabags5_rooibos, !duplicated(teabags5_rooibos$pred))
+#find deviance-based pseudo r squared:
+pesudo_r2_rooibos<- 1-fit_rooibos$deviance / fit_rooibos$null.deviance
+#~0.74
+pseudo_r2_green <- 1-fit_green$deviance / fit_green$null.deviance
+#~0.96
+tb <-mutate(data8.1, treatment = case_when(C_source == "L" ~ "Labile Carbon Species", C_source == "R" ~ "Recalcitrant Carbon Species"))
+tb1<-tb[,-c(1)]
+teabags7.3 <-mutate(teabags7.2, treatment = case_when(tea_type =="Green" ~ "Green teabags", tea_type == "Rooibos" ~ "Rooibos teabags"))
+teabags7.4<-teabags7.3[,-c(1)]
+tb2<-rbind(teabags7.4, tb1) #showing means and standard deviation of each treatment, useful for plotting later
+tb2$treatment<-factor(tb2$treatment, levels= c("Green teabags", "Labile Carbon Species", "Rooibos teabags","Recalcitrant Carbon Species"))
+#Analysis: combine data8 (natural leaf litter with carbon source column) with teabags 7 (tea bags collected at 6 months)
+data8.3 <-subset(data8, select = c("Code", "Site", "decay_rate_mg_day","C_source"))
+data8.4<-mutate(data8.3, treatment = case_when(C_source == "L" ~ "Labile Carbon", C_source == "R" ~ "Recalcitrant Carbon"))
+data8.5 <-data8.4[,-c(4)]
+teabags7.5<-subset(teabags7, select = c("Code", "Site", "decay_rate_mg_day","tea_type"))    teabags7.6<-mutate(teabags7.5, treatment = case_when(tea_type == "Green" ~ "Green teabags", tea_type == "Rooibos" ~ "Rooibos teabags"))
+teabags7.5<-subset(teabags7, dplyselect = c("Code", "Site", "decay_rate_mg_day","tea_type"))
+teabags7.6<-mutate(teabags7.5, treatment = case_when(tea_type == "Green" ~ "Green teabags", tea_type == "Rooibos" ~ "Rooibos teabags"))
+teabags7.7<-teabags7.6[,-c(4)]
+tb3<-rbind(teabags7.7, data8.5)
+teabags7.5<-subset(teabags7, select = c("Code", "Site", "decay_rate_mg_day","tea_type"))
+teabags7.6<-mutate(teabags7.5, treatment = case_when(tea_type == "Green" ~ "Green teabags", tea_type == "Rooibos" ~ "Rooibos teabags"))
+teabags7.7<-teabags7.6[,-c(4)]
+tb3<-rbind(teabags7.7, data8.5)
+table(tb3$treatment, tb3$Site)
+kruskal.test(data=tb3, decay_rate_mg_day ~ treatment)
+DunnTest(decay_rate_mg_day ~ treatment, data=tb3, method='bonferroni')
+#for teabags
+table(teabags5$Site, teabags5$duration_months, teabags5$tea_type)
+#we only have one observation for CG at 4 months, and 2 for G site at 6 months, all others have at least 3 observations.
+teabags8<-teabags5%>% group_by(Site, duration_months, tea_type) %>% summarize (mean_decay_rate_mg_day = mean(decay_rate_mg_day),                                                       stdev_decay_rate_mg_day = sd(decay_rate_mg_day))
+teabags8.1<-mutate(teabags8, CV = stdev_decay_rate_mg_day/ mean_decay_rate_mg_day)
+#for natural leaf litter
+data9<-data6%>% group_by(Site,Common_Name) %>% summarize (mean_decay_rate_mg_day = mean(decay_rate_mg_day),                                                       stdev_decay_rate_mg_day = sd(decay_rate_mg_day))
+data9.1<-mutate(data9, CV = stdev_decay_rate_mg_day/ mean_decay_rate_mg_day)
+mod046<-lm(data=data9.1, CV ~ Site)
+anova(mod046)#almost significant.
+summary(mod046)
+hist(resid(mod046))
+shapiro.test(resid(mod046))#good
+LeveneTest(mod046) #good
+#### end ####
+#### Figure 1: Site * Species Matrix Plot ####
+data6$Site<-factor(data6$Site, levels = c("CC1","W2","CG3","BA4"))
+data6$Common_Name<-factor(data6$Common_Name, levels = c("Gingko","Sweetgum","Red Oak","Sycamore"))
+letters101c<-tibble(
+Common_Name=c("Gingko","Gingko","Gingko","Gingko","Sweetgum","Sweetgum","Sweetgum","Sweetgum","Red Oak","Red Oak","Red Oak","Red Oak","Sycamore","Sycamore","Sycamore","Sycamore"),
+Site = c("CC1","W2","CG3","BA4","CC1","W2","CG3","BA4","CC1","W2","CG3","BA4","CC1","W2","CG3","BA4"),
+x = c(1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4),
+y =  c(10.7,9.7,7.3,8.8, 9.8, 8.5, 7,8.5,7,15,4.3,5, 6.3,6.7, 5,4),
+label = c('a','ab','abcd','abcde','ab','abc','abcde','bcde','abcde','abcd','de','de','abcde','abcde','cde','e')
+)
+ggplot(data=data6, aes(x=Site, y=decay_rate_mg_day, color=Site, fill=Site))+theme_bw()+geom_point( alpha=0.95, show.legend=FALSE)+geom_boxplot(alpha=0.5, outlier.color='black', outlier.shape=16, outlier.size = 2, show.legend=FALSE)+facet_wrap(~factor(Common_Name, levels=c('Gingko','Sweetgum','Red Oak','Sycamore')), ncol=4, scales="free_x")+scale_color_manual(breaks=c("CC1","W2","CG3","BA4"), values=c('seagreen3','deepskyblue2',"cornflowerblue",'skyblue4'))+scale_fill_manual(breaks=c("CC1","W2","CG3","BA4"), values=c('seagreen3','deepskyblue2',"cornflowerblue",'skyblue4'))+ scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),strip.background = element_rect(fill="white"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0), axis.title.y=element_text(size=14), axis.text.x=element_text(size=13),axis.text.y=element_text(size=13)) +geom_text(data=letters101c, aes(x=x, y=y, label=label), size=3, fontface='bold', inherit.aes=FALSE)+labs(y="Decay Rate (mg" ~day^-1*")", x="")
+letters101b<-tibble(
+Site = c ("CC1","W2","CG3","BA4"),
+x = c(1,2,3,4),
+y =  c(12,12,9,9),
+label = c('a','a','b','b')
+)
+ggplot(data=data6, aes(x=Site, y=decay_rate_mg_day, color=Site, fill=Site))+theme_bw()+geom_point(position='jitter', alpha=0.9, show.legend=FALSE, aes(x=Site, y=decay_rate_mg_day, fill=Site))+geom_boxplot(alpha=0.6, color='black',outlier.color='black', outlier.shape=16, outlier.size = 2, show.legend=FALSE)+scale_color_manual(breaks=c("CC1","W2","CG3","BA4"), values=c('seagreen3','deepskyblue2',"cornflowerblue",'skyblue4'))+scale_fill_manual(breaks=c("CC1","W2","CG3","BA4"), values=c('seagreen3','deepskyblue2',"cornflowerblue",'skyblue4'))+ geom_text(data=letters101b, aes(x=x, y=y, label=label), size=4, fontface='bold', inherit.aes=FALSE)+labs(x="", y="Decay Rate (mg" ~day^-1*")", title= "")+
+theme(axis.title.y=element_text(size=14), axis.text.x=element_text(size=13),axis.text.y=element_text(size=13),panel.grid.major=element_blank(), panel.grid.minor=element_blank() )+ scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))
+ggplot(site_data4, aes(x=temp_mean, y=mean_decay_rate_mg_day))+theme_bw()+labs(x="Mean Temperature (°C)", y="Mean Decay Rate (mg" ~day^-1*")", title= "")+
+theme(axis.text.x=element_text(size=13),axis.title.x = element_text(size=14), axis.text.y=element_text(size=13), axis.title.y=element_text(size=14), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position = c(0.7,0.9),legend.direction='horizontal', legend.box.background=element_rect(),legend.box.margin=margin(5,5,5,5), panel.grid.major=element_blank(), panel.grid.minor=element_blank())+stat_poly_eq(use_label(c("eq", "R2")), size=5, label.y=0.17)+
+stat_poly_line(color='black')+ geom_point(aes(fill=Site, shape=Site),size=(9), color='black')+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - stdev_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ stdev_decay_rate_mg_day), width=0.1)+
+scale_shape_manual(name = 'Site', values=c(21,22,24,23),labels=c("CC","W", "G","BA"), breaks=c("CC1","W2", "CG3","BA4"))+scale_fill_manual(breaks=c("CC1","W2","CG3","BA4"),values=c('seagreen3','deepskyblue2',"cornflowerblue",'skyblue4'), labels=c("CC","W", "G","BA"), name="Site")
+letters101a<-tibble(
+C_source = c("L","L","R","R"),
+Site = c ("Gingko ","Sweetgum","Red Oak","Sycamore"),
+x = c(1,2,1,2),
+y =  c(12,12,9,9),
+label = c('a','a','b','b')
+)
+ggplot(data=data8, aes(x=Common_Name, y=decay_rate_mg_day, color=Common_Name, fill=Common_Name))+theme_bw()+geom_point(position='jitter', alpha=0.9, show.legend=FALSE)+geom_boxplot(alpha=0.6, color='black',outlier.color='black', outlier.shape=16, outlier.size = 2, show.legend=FALSE)+scale_color_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+scale_fill_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+ geom_text(data=letters101a, aes(x=x, y=y, label=label), size=4, fontface='bold', inherit.aes=FALSE)+labs(x="", y="Decay Rate (mg" ~day^-1*")")+
+theme(axis.text.x=element_text(size=13),axis.title.x = element_text(size=14), axis.text.y=element_text(size=13), axis.title.y=element_text(size=14),strip.background = element_rect(fill="white", size=1, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0), panel.grid.major=element_blank(),panel.grid.minor=element_blank())+facet_wrap(vars(C_source), scales='free_x', labeller = labeller( C_source=   c("L" = "Labile C", "R" = "Recalcitrant C")))
+ggplot(data=data8, aes(x=Common_Name, y=decay_rate_mg_day, color=Common_Name, fill=Common_Name))+theme_bw()+geom_point(position='jitter', alpha=0.9, show.legend=FALSE)+geom_boxplot(alpha=0.6, color='black',outlier.color='black', outlier.shape=16, outlier.size = 2, show.legend=FALSE)+scale_color_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+scale_fill_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+ geom_text(data=letters101a, aes(x=x, y=y, label=label), linewidth=4, fontface='bold', inherit.aes=FALSE)+labs(x="", y="Decay Rate (mg" ~day^-1*")")+
+theme(axis.text.x=element_text(size=13),axis.title.x = element_text(size=14), axis.text.y=element_text(size=13), axis.title.y=element_text(size=14),strip.background = element_rect(fill="white", size=1, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0), panel.grid.major=element_blank(),panel.grid.minor=element_blank())+facet_wrap(vars(C_source), scales='free_x', labeller = labeller( C_source=   c("L" = "Labile C", "R" = "Recalcitrant C")))
+ggplot(data=data8, aes(x=Common_Name, y=decay_rate_mg_day, color=Common_Name, fill=Common_Name))+theme_bw()+geom_point(position='jitter', alpha=0.9, show.legend=FALSE)+geom_boxplot(alpha=0.6, color='black',outlier.color='black', outlier.shape=16, outlier.size = 2, show.legend=FALSE)+scale_color_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+scale_fill_manual(breaks=c("Gingko","Sweetgum","Red Oak","Sycamore"), values=c("pink2",'orange2','maroon2','brown2'))+ geom_text(data=letters101a, aes(x=x, y=y, label=label), size=4, fontface='bold', inherit.aes=FALSE)+labs(x="", y="Decay Rate (mg" ~day^-1*")")+
+theme(axis.text.x=element_text(size=13),axis.title.x = element_text(size=14), axis.text.y=element_text(size=13), axis.title.y=element_text(size=14),strip.background = element_rect(fill="white", size=1, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0), panel.grid.major=element_blank(),panel.grid.minor=element_blank())+facet_wrap(vars(C_source), scales='free_x', labeller = labeller( C_source=   c("L" = "Labile C", "R" = "Recalcitrant C")))
+legend <- data8.2 %>% distinct(Site, C_source) %>%
+mutate(
+fill = case_when(
+Site == "CC1" ~ 'seagreen3',
+Site == "W2" ~ 'deepskyblue2',
+Site == "CG3" ~ 'cornflowerblue',
+Site == "BA4"~ 'skyblue4',
+),
+shape = case_when(
+C_source == "L"~ 21,
+C_source == "R"~ 22
+),
+label = paste0(Site, C_source),
+)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+legend <- data8.2 %>% distinct(Site, C_source) %>%
+mutate(
+fill = case_when(
+Site == "CC1" ~ 'seagreen3',
+Site == "W2" ~ 'deepskyblue2',
+Site == "CG3" ~ 'cornflowerblue',
+Site == "BA4"~ 'skyblue4',
+),
+shape = case_when(
+C_source == "L"~ 21,
+C_source == "R"~ 22
+),
+label = paste0(Site, C_source),
+)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+View(data8.2)
+data8.2$Site<-factor(data8.2$Site, levels = c("CC1","W2","CG3","BA4"))
+legend <- data8.2 %>% distinct(Site, C_source) %>%
+mutate(
+fill = case_when(
+Site == "CC1" ~ 'seagreen3',
+Site == "W2" ~ 'deepskyblue2',
+Site == "CG3" ~ 'cornflowerblue',
+Site == "BA4"~ 'skyblue4',
+),
+shape = case_when(
+C_source == "L"~ 21,
+C_source == "R"~ 22
+),
+label = paste0(Site, C_source),
+)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+View(legend)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+View(legend1)
+data8.2$C_source<-factor(data8.2$C_source, levels = c("L","R"))
+legend <- data8.2 %>% distinct(Site, C_source) %>%
+mutate(
+fill = case_when(
+Site == "CC1" ~ 'seagreen3',
+Site == "W2" ~ 'deepskyblue2',
+Site == "CG3" ~ 'cornflowerblue',
+Site == "BA4"~ 'skyblue4',
+),
+shape = case_when(
+C_source == "L"~ 21,
+C_source == "R"~ 22
+),
+label = paste0(Site, C_source),
+)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+View(data8.2)
+data8.2$Site<-factor(data8.2$Site, levels = c("CC1","W2","CG3","BA4"))
+View(data8.2)
+data8.2$C_source<-factor(data8.2$C_source, levels = c("L","R"))
+data8.2$Site<-factor(data8.2$Site, levels = c("CC1","W2","CG3","BA4"))
+legend <- data8.2 %>% distinct(Site, C_source) %>%
+mutate(
+fill = case_when(
+Site == "CC1" ~ 'seagreen3',
+Site == "W2" ~ 'deepskyblue2',
+Site == "CG3" ~ 'cornflowerblue',
+Site == "BA4"~ 'skyblue4',
+),
+shape = case_when(
+C_source == "L"~ 21,
+C_source == "R"~ 22
+),
+label = paste0(Site, C_source),
+)
+legend1<-mutate(legend, label=case_when(
+label == "CC1L"~ "CC + LC",
+label == "CC1R"~ "CC + RC",
+label == "W2L"~ "W + LC",
+label == "W2R"~ "W + RC",
+label == "CG3L"~ "G + LC",
+label == "CG3R"~ "G + RC",
+label == "BA4L"~ "BA + LC",
+label == "BA4R"~ "BA + RC"
+))
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+type = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1 %>% pull(fill)
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = legend1%>% pull(shape)
+)+scale_fill_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = setNames(legend1$fill, interaction(legend1$Site, legend1$C_source))
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+ggplot(data8.2, aes(x=Site, y=mean_decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(C_source)),
+shape = interaction(as.factor(Site), as.factor(C_source))))+theme_bw()+
+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13),strip.background = element_rect(fill="white", size=1, color="black"), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position ='top',legend.direction='horizontal' ,legend.box.background=element_rect(color='black', size = 1),axis.text.y=element_text(size=13),axis.title.y=element_text(size=14))+
+labs(y="Mean Decay Rate (mg" ~day^-1*")",x="")+
+scale_shape_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = setNames(legend1$shape, interaction(legend1$Site, legend1$C_source))
+)+scale_fill_manual(
+name = "Site &
+C Quality",
+labels = legend1 %>% pull(label),
+values = setNames(legend1$fill, interaction(legend1$Site, legend1$C_source))
+) +
+geom_point(size=5, color='black')+
+scale_x_discrete(labels=c("CC1" = "CC", "W2" = "W","CG3"="G","BA4"="BA"))+
+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.05)
+om_final7 <-om_final4%>% group_by(species) %>% summarize (mean_om = mean(om_percent),                                                       sd_om= sd(om_percent))
+om_final7.1<-mutate(om_final7, time = 'final')
+om_initial4<-mutate(om_initial1, time = 'initial')
+om8<-rbind(om_final7.1, om_initial4)
+om8$time<-factor(om8$time, levels=c("initial",'final'))
+letters001<-tibble(
+species=c("Gingko","Sweetgum","Red Oak ",'Sycamore'),
+x=c(1.5,1.5,1.5,1.5),
+y=c(93,96,96,96),
+label=c('***','***','***','***')
+)
+ggplot(data=om8, aes(y=mean_om, x=time, fill=time))+geom_col(show.legend=F, color='black', alpha=0.8)+facet_wrap(~factor(species, levels=c("Gingko","Sweetgum","Red Oak ",'Sycamore')), ncol=4)+geom_errorbar(aes(ymin = mean_om - sd_om, ymax = mean_om+sd_om), width=0.2, color='black')+theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(), axis.title.x=element_blank(), axis.text.x=element_text(size=13,color='black'), axis.title.y=element_text(size=14), axis.text.y=element_text(size=13),strip.background = element_rect(fill="white", linewidth=.5, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0))+labs(y="Mean Percent OM")+geom_text(data=letters001, aes(x=x, y=y, label=label), color='black', inherit.aes=F, fontface='bold', size=7)+scale_fill_manual(values=c("thistle",'steelblue'), breaks=c("initial", 'final'))
+cn_initial_c1<-mutate(cn_initial_c, time = 'initial')
+cn_final_c1<-mutate(cn_final_c, time = 'final')
+cn5<-rbind(cn_initial_c1, cn_final_c1)
+cn5$time<-factor(cn5$time, levels = c("initial", 'final'))
+letters002<-tibble(
+species = c("Gingko","Sweetgum", "Red Oak", "Sycamore"),
+x=c(1.5,1.5,1.5,1.5),
+y=c(50,50,50,50),
+label=c("***",'***','','***')
+)
+ggplot(data=cn5, aes(y=mean_percentc, x=time, fill=time))+geom_col(show.legend=F, color='black', alpha=0.8)+facet_wrap(~factor(species, levels=c("Gingko","Sweetgum","Red Oak",'Sycamore')), ncol=4)+geom_errorbar(aes(ymin = mean_percentc - sd_percentc, ymax = mean_percentc+sd_percentc), width=0.2, color='black')+theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(), axis.title.x=element_blank(), axis.text.x=element_text(size=13,color='black'), axis.title.y=element_text(size=14), axis.text.y=element_text(size=13),strip.background = element_rect(fill="white", linewidth=.5, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0))+labs(y="Mean Percent C")+geom_text(data=letters002, aes(x=x, y=y, label=label), color='black', inherit.aes=F, fontface='bold', size=7)+scale_fill_manual(values=c("thistle",'steelblue'), breaks=c("initial", 'final'))
+cn_initial_n1<-mutate(cn_initial_n, time = 'initial')
+cn_final_n1<-mutate(cn_final_n, time = 'final')
+cn8<-rbind(cn_final_n1, cn_initial_n1)
+cn8$time<-factor(cn8$time, levels = c("initial", 'final'))
+letters003<-tibble(
+species = c("Gingko","Sweetgum", "Red Oak", "Sycamore"),
+x=c(1.5,1.5,1.5,1.5),
+y=c(1.6,1.6,1.6,1.6),
+label=c("***",'','***','')
+)
+ggplot(data=cn8, aes(y=mean_percentn, x=time, fill=time))+geom_col(show.legend=F, color='black', alpha=0.8)+facet_wrap(~factor(species, levels=c("Gingko","Sweetgum","Red Oak",'Sycamore')), ncol=4)+geom_errorbar(aes(ymin = mean_percentn - sd_percentn, ymax = mean_percentn+sd_percentn), width=0.2, color='black')+theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(), axis.title.x=element_blank(), axis.text.x=element_text(size=13,color='black'), axis.title.y=element_text(size=14), axis.text.y=element_text(size=13),strip.background = element_rect(fill="white", linewidth=.5, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0))+labs(y="Mean Percent N")+geom_text(data=letters003, aes(x=x, y=y, label=label), color='black', inherit.aes=F, fontface='bold', size=7)+scale_fill_manual(values=c("thistle",'steelblue'), breaks=c("initial", 'final'))
+#### Figure 4d: C:N ####
+cn_final5<-mutate(cn_final2, time = 'final')
+cn_final6<-mutate(cn_final5, mean_cn = mean_cn_fin, sd_cn = sd_cn_fin)
+cn_final7<-dplyr::select(cn_final6, 'species','mean_cn','sd_cn', 'time')
+cn_initial6<-mutate(cn_initial3, time = 'initial')
+cn_initial7<-mutate(cn_initial6, mean_cn = mean_cn_in, sd_cn = sd_cn_in)
+cn_initial8<-dplyr::select(cn_initial7, 'species','mean_cn','sd_cn', 'time')
+cn3<-rbind(cn_final7, cn_initial8)
+cn3$time<-factor(cn3$time, levels=c("initial",'final'))
+letters000<-tibble(
+species=c("Gingko","Sweetgum","Red Oak",'Sycamore'),
+x=c(1.5,1.5,1.5,1.5),
+y=c(75,75,90,75),
+label=c('***','','***','')
+)
+ggplot(data=cn3, aes(y=mean_cn, x=time, fill=time))+geom_col(show.legend=F, color='black', alpha=0.8)+facet_wrap(~factor(species, levels=c("Gingko","Sweetgum","Red Oak",'Sycamore')), ncol=4)+geom_errorbar(aes(ymin = mean_cn - sd_cn, ymax = mean_cn+sd_cn), width=0.2, color='black')+theme_bw()+theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(), axis.title.x=element_blank(), axis.text.x=element_text(size=13,color='black'), axis.title.y=element_text(size=14), axis.text.y=element_text(size=13),strip.background = element_rect(fill="white", linewidth=.5, color="black"),  strip.text.x = element_text(size = 13, colour = "black", angle = 0))+labs(y="Mean C:N")+geom_text(data=letters000, aes(x=x, y=y, label=label), color='black', inherit.aes=F, fontface='bold', size=7)+scale_fill_manual(values=c("thistle",'steelblue'), breaks=c("initial", 'final'))
+#### Figure 5a: Tea Bag Decay Rate ####
+legend2 <- teabags5 %>% distinct(Site, tea_type) %>%
+mutate(
+fill = case_when(
+tea_type == "Green" ~ 'palegreen3',
+tea_type == "Rooibos" ~ 'orchid4'
+),
+shape = case_when(
+Site == "CC1" ~ 21,
+Site == "W2" ~ 22,
+Site == "CG3" ~ 24,
+Site == "BA4"~ 23,
+),
+label = paste0(tea_type, Site)
+)
+legend3<-mutate(legend2, label=case_when(
+label == "GreenBA4"~ "Green: BA",
+label == "GreenCC1"~ "Green: CC",
+label == "GreenCG3"~ "Green: G",
+label == "GreenW2"~ "Green: W",
+label == "RooibosBA4"~ "Rooibos: BA",
+label == "RooibosCC1"~ "Rooibos: CC",
+label == "RooibosCG3"~ "Rooibos: G",
+label == "RooibosW2"~ "Rooibos: W"
+))
+ggplot(teabags5, aes(x=diff_in_days, y=decay_rate_mg_day,fill = interaction(as.factor(Site), as.factor(tea_type)),
+shape = interaction(as.factor(Site), as.factor(tea_type))))+theme_bw()+theme(legend.box.background =element_rect( color='black'),legend.background=element_blank(), axis.text.x=element_text(size=13),axis.title.x = element_text(size=14), axis.text.y=element_text(size=13), axis.title.y=element_text(size=14), legend.text=element_text(size=13), legend.title=element_text(size=14), legend.position = 'top', legend.direction='horizontal', panel.grid.major=element_blank(), panel.grid.minor=element_blank()) +labs(x="Days", y="Decay Rate (mg" ~day^-1*")")+geom_point(size=3)+
+scale_shape_manual(
+name = "Site &
+Tea Type",
+labels = legend3 %>% pull(label),
+values = legend3%>% pull(shape)
+)+scale_fill_discrete(
+name = "Site &
+Tea Type",
+labels = legend3 %>% pull(label),
+type = legend3 %>% pull(fill)
+)+
+geom_line(aes(y = pred, group=tea_type), data = teabags5_greenplot, color = "palegreen3") +
+geom_line(aes(y = pred, group=tea_type), data = teabags5_rooibosplot, color = "orchid4")+
+geom_ribbon(data=teabags5_greenplot,aes(ymin=CI_lwr, ymax=CI_upr, xmin=60, xmax=180, x=diff_in_days, y=decay_rate_mg_day), inherit.aes=F, alpha=0.2, linetype=2)+ annotate("rect", xmin = 170, xmax = 190, ymin = 0, ymax = 8,alpha = 0, color='black')+scale_x_continuous(breaks=c(60,120,180))+
+geom_ribbon(data=teabags5_rooibosplot,aes(ymin=CI_lwr, ymax=CI_upr, xmin=60, xmax=180, x=diff_in_days, y=decay_rate_mg_day), inherit.aes=F, alpha=0.2, linetype=2)+
+geom_text(label="R^2", aes(x=177, y=18.2), size=5, parse=TRUE, color='palegreen3')+
+geom_text(label="= 0.96", aes(x=186, y=18), size=5, color='palegreen3')+
+geom_text(label='k = 0.28,', aes(x=165, y=18), size=5, color='palegreen3')+
+geom_text(label="R^2", aes(x=177, y=16.2), size=5, parse=TRUE, color='orchid4')+
+geom_text(label=" = 0.74", aes(x=186, y=16), size=5, color='orchid4')+
+geom_text(label="k = 0.21,", aes(x=165, y=16), size=5, color='orchid4')
+####end####
+tb4<-tb3 %>% group_by(treatment) %>% summarize (mean_decay_rate_mg_day = mean(decay_rate_mg_day),                                                       sd_decay_rate_mg_day= sd(decay_rate_mg_day))
+tb4$treatment<-factor(tb4$treatment, levels=c("Green teabags","Labile Carbon", "Rooibos teabags", "Recalcitrant Carbon"))
+tb3$treatment<-factor(tb3$treatment, levels=c("Green teabags","Labile Carbon", "Rooibos teabags", "Recalcitrant Carbon"))
+letters948a<-tibble(
+treatment = c ("Green teabags", "Labile Carbon Species", "Rooibos teabags", "Recalcitrant Carbon Species"),
+x = c(1,2,3,4),
+y =  c(8,11, 6.3,7.1),
+label = c('a','a','b','b')
+)
+ggplot(data=tb4, aes(x=treatment, y=mean_decay_rate_mg_day, fill=treatment, color=treatment), show.legend=F)+geom_col(alpha=0.8,show.legend=F)+geom_errorbar(aes(ymin = mean_decay_rate_mg_day - sd_decay_rate_mg_day, ymax = mean_decay_rate_mg_day+ sd_decay_rate_mg_day), width=0.2, color='black')+theme_bw()+geom_point(data=tb3, aes(x=treatment, y=decay_rate_mg_day, fill=treatment), shape=21, size=2, show.legend=F)+scale_color_manual(breaks=c("Green teabags","Labile Carbon","Rooibos teabags","Recalcitrant Carbon"), values=c("black","black",'black','black'))+scale_fill_manual(breaks=c("Green teabags","Labile Carbon","Rooibos teabags","Recalcitrant Carbon"), values=c('palegreen3','aquamarine2','orchid4','pink4'))+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(), axis.text.x=element_text(size=13, color='black'), axis.title.x=element_blank(),axis.title.y=element_text(size=14), axis.text.y=element_text(size=13))+labs(y="Decay Rate (mg" ~day^-1*")")+ geom_text(data=letters948a, aes(x=x, y=y, label=label), size=5, fontface='bold', inherit.aes=FALSE)

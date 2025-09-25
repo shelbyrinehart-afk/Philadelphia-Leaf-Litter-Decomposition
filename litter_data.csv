@@ -1,0 +1,133 @@
+﻿Code,Common_Name,Species_Name,Mesh,Site,Int_wt_g,mass_loss_transport_g,Final_wt_g,Total_wt_lost_g,percent_wt_lost
+GKL 219,Gingko,Ginkgo Biloba,Large,CC1,4,0.001,1.73636,2.26264,56.58014504
+GKL 213,Gingko,Ginkgo Biloba,Large,CC1,4,0.016,0.94623,3.03777,76.24924699
+GKL 228,Gingko,Ginkgo Biloba,Large,CC1,4.005,0.13,1.63719,2.23781,57.74993548
+GKL 221,Gingko,Ginkgo Biloba,Large,CC1,3.998,0.077,1.86679,2.05421,52.38995154
+GKL 227,Gingko,Ginkgo Biloba,Large,CC1,4.008,0.028,1.44218,2.53782,63.76432161
+GKS 275,Gingko,Ginkgo Biloba,Small,CC1,3.997,0,2.45979,1.53721,38.45909432
+GKS 276,Gingko,Ginkgo Biloba,Small,CC1,3.997,0,2.44442,1.55258,38.84363272
+GKS 282,Gingko,Ginkgo Biloba,Small,CC1,4.001,0,2.41801,1.58299,39.56485879
+GKS 289,Gingko,Ginkgo Biloba,Small,CC1,4.002,0.001,2.1654,1.8356,45.87853037
+GKS 274,Gingko,Ginkgo Biloba,Small,CC1,4.003,0,2.52508,1.47792,36.92030977
+GKL 201,Gingko,Ginkgo Biloba,Large,W2,3.996,0.106,2.59969,1.29031,33.16992288
+GKL 211,Gingko,Ginkgo Biloba,Large,W2,4,0.107,2.97837,0.91463,23.4942204
+GKL 209,Gingko,Ginkgo Biloba,Large,W2,4,0.088,2.31052,1.60148,40.93762781
+GKL 208,Gingko,Ginkgo Biloba,Large,W2,4.001,0.088,1.95729,1.95571,49.97981089
+GKL 244,Gingko,Ginkgo Biloba,Large,W2,3.996,0.06,2.27893,1.65707,42.10035569
+GKS 283,Gingko,Ginkgo Biloba,Small,W2,3.995,0.001,2.50197,1.49203,37.35678518
+GKS 280,Gingko,Ginkgo Biloba,Small,W2,3.995,0,2.37163,1.62337,40.6350438
+GKS 286,Gingko,Ginkgo Biloba,Small,W2,4,0,2.6772,1.3228,33.07
+GKS 279,Gingko,Ginkgo Biloba,Small,W2,4.006,0,2.42051,1.58549,39.57788318
+GKS 248,Gingko,Ginkgo Biloba,Small,W2,4,0,2.32747,1.67253,41.81325
+GKL 231,Gingko,Ginkgo Biloba,Large,CG3,3.999,0.049,2.70945,1.24055,31.40632911
+GKS 281,Gingko,Ginkgo Biloba,Small,CG3,4,0,2.90958,1.09042,27.2605
+GKS 265,Gingko,Ginkgo Biloba,Small,CG3,4,0,2.8953,1.1047,27.6175
+GKL 212,Gingko,Ginkgo Biloba,Large,CG3,4,0.022,1.96554,2.01246,50.58974359
+GKL 223,Gingko,Ginkgo Biloba,Large,CG3,4.009,0.029,1.99313,1.98687,49.92135678
+GKS 269,Gingko,Ginkgo Biloba,Small,CG3,3.998,0,3.07135,0.92665,23.17783892
+GKL 216,Gingko,Ginkgo Biloba,Large,CG3,4,0.01,1.98832,2.00168,50.16741855
+GKS 271,Gingko,Ginkgo Biloba,Small,CG3,3.998,0,3.0663,0.9317,23.30415208
+GKS 266,Gingko,Ginkgo Biloba,Small,CG3,4,0,2.80931,1.19069,29.76725
+GKL 220,Gingko,Ginkgo Biloba,Large,CG3,4,0.01,1.44434,2.54566,63.80100251
+GKL 203,Gingko,Ginkgo Biloba,Large,BA4,3.996,0.026,3.29486,0.67514,17.00604534
+GKL 240,Gingko,Ginkgo Biloba,Large,BA4,4.001,0.037,2.13687,1.82713,46.09308779
+GKL 239,Gingko,Ginkgo Biloba,Large,BA4,4.008,0.072,2.46379,1.47221,37.40370935
+GKL 232,Gingko,Ginkgo Biloba,Large,BA4,4,0.031,2.2787,1.6903,42.58755354
+GKL 241,Gingko,Ginkgo Biloba,Large,BA4,3.994,0.043,2.10951,1.84149,46.60820046
+GKS 251,Gingko,Ginkgo Biloba,Small,BA4,4.008,0,3.10811,0.89989,22.45234531
+GKS 254,Gingko,Ginkgo Biloba,Small,BA4,3.996,0,3.28713,0.70887,17.73948949
+GKS 252,Gingko,Ginkgo Biloba,Small,BA4,4.009,0,3.12343,0.88557,22.08954852
+GKS 255,Gingko,Ginkgo Biloba,Small,BA4,4,0.004,2.76264,1.23336,30.86486486
+GKS 256,Gingko,Ginkgo Biloba,Small,BA4,4,0,2.49719,1.50281,37.57025
+SGL 319,Sweetgum,Liquidambar styraciflua,Large,CC1,4.002,0.024,2.78459,1.19341,30.00025138
+SGL 314,Sweetgum,Liquidambar styraciflua,Large,CC1,4.01,0.008,2.28112,1.72088,43.00049975
+SGL 311,Sweetgum,Liquidambar styraciflua,Large,CC1,4,0.002,2.25729,1.74071,43.53951976
+SGL 332,Sweetgum,Liquidambar styraciflua,Large,CG3,3.999,0.006,2.68594,1.30706,32.73378412
+SGL 304,Sweetgum,Liquidambar styraciflua,Large,CC1,4.01,0.044,2.13193,1.83407,46.24483106
+SGS 354,Sweetgum,Liquidambar styraciflua,Small,CC1,4,0.005,2.56843,1.42657,35.70888611
+SGS 357,Sweetgum,Liquidambar styraciflua,Small,CC1,3.995,0,2.40719,1.58781,39.74493116
+SGS 353,Sweetgum,Liquidambar styraciflua,Small,CC1,3.993,0,2.69323,1.29977,32.55121463
+SGS 358,Sweetgum,Liquidambar styraciflua,Small,CC1,4.005,0.006,2.31222,1.68678,42.18004501
+SGS 355,Sweetgum,Liquidambar styraciflua,Small,CC1,4,0.003,3.13265,0.86435,21.62496873
+SGS 380,Sweetgum,Liquidambar styraciflua,Small,W2,4,0,2.63139,1.36861,34.21525
+SGS 376,Sweetgum,Liquidambar styraciflua,Small,W2,4,0,2.71802,1.28198,32.0495
+SGS 385,Sweetgum,Liquidambar styraciflua,Small,W2,4,0,2.6223,1.3777,34.4425
+SGS 379,Sweetgum,Liquidambar styraciflua,Small,W2,4,0.013,2.67648,1.31052,32.86982694
+SGS 384,Sweetgum,Liquidambar styraciflua,Small,W2,4,0,2.64913,1.35087,33.77175
+SGL 340,Sweetgum,Liquidambar styraciflua,Large,W2,3.997,0.034,2.70048,1.26252,31.85768357
+SGL 327,Sweetgum,Liquidambar styraciflua,Large,W2,3.996,0.003,2.45499,1.53801,38.5176559
+SGL 338,Sweetgum,Liquidambar styraciflua,Large,W2,3.996,0.039,2.18572,1.77128,44.76320445
+SGL 334,Sweetgum,Liquidambar styraciflua,Large,W2,4.002,0.062,2.48501,1.45499,36.9286802
+SGL 339,Sweetgum,Liquidambar styraciflua,Large,W2,3.999,0.014,2.15555,1.82945,45.90840652
+SGL 313,Sweetgum,Liquidambar styraciflua,Large,CG3,3.999,0.001,2.87036,1.12764,28.20510255
+SGL 301,Sweetgum,Liquidambar styraciflua,Large,CG3,4.003,0.011,2.71901,1.27299,31.88852705
+SGL 320,Sweetgum,Liquidambar styraciflua,Large,CG3,3.999,0.11,2.59506,1.29394,33.27179223
+SGL 322,Sweetgum,Liquidambar styraciflua,Large,CG3,3.998,0.045,2.70476,1.24824,31.5770301
+SGL 315,Sweetgum,Liquidambar styraciflua,Large,CG3,3.999,0.269,1.96254,1.76746,47.3849866
+SGS 361,Sweetgum,Liquidambar styraciflua,Small,CG3,4.001,0.003,3.01302,0.98498,24.63681841
+SGS 344,Sweetgum,Liquidambar styraciflua,Small,CG3,4.007,0.007,3.08692,0.91308,22.827
+SGS 360,Sweetgum,Liquidambar styraciflua,Small,CG3,3.998,0,3.03677,0.96123,24.04277139
+SGS 362,Sweetgum,Liquidambar styraciflua,Small,CG3,3.997,0,2.95508,1.04192,26.06755066
+SGS 349,Sweetgum,Liquidambar styraciflua,Small,CG3,4.003,0.001,2.94367,1.05833,26.44502749
+SGL 324,Sweetgum,Liquidambar styraciflua,Large,BA4,3.998,0.007,3.10389,0.88711,22.22776247
+SGS 373,Sweetgum,Liquidambar styraciflua,Small,BA4,4,0,3.79177,0.20823,5.20575
+SGS 372,Sweetgum,Liquidambar styraciflua,Small,BA4,4,0,3.94749,0.05251,1.31275
+SGL 321,Sweetgum,Liquidambar styraciflua,Large,BA4,3.996,0.003,3.03565,0.95735,23.97570749
+SGL 318,Sweetgum,Liquidambar styraciflua,Large,BA4,3.997,0.014,2.79717,1.18583,29.7722822
+SGS 365,Sweetgum,Liquidambar styraciflua,Small,BA4,4.006,0,2.59733,1.40867,35.16400399
+SGL 326,Sweetgum,Liquidambar styraciflua,Large,BA4,4.002,0.001,2.83182,1.16918,29.22219445
+SGL 329,Sweetgum,Liquidambar styraciflua,Large,BA4,3.997,0.048,2.71403,1.23497,31.2729805
+SGS 364,Sweetgum,Liquidambar styraciflua,Small,BA4,3.996,0,2.92712,1.06888,26.74874875
+SGS 366,Sweetgum,Liquidambar styraciflua,Small,BA4,4.002,0.01,2.72488,1.26712,31.74148297
+ROL 401,Red Oak,Quercus rubra,Large,CC1,4.001,0.006,2.9731,1.0219,25.57947434
+ROL 411,Red Oak,Quercus rubra,Large,CC1,3.997,0.003,2.83995,1.15405,28.89459189
+ROL 424,Red Oak,Quercus rubra,Large,CC1,4.006,0.015,3.2918,0.6992,17.51941869
+ROL 409,Red Oak,Quercus rubra,Large,CC1,3.995,0.004,2.77644,1.21456,30.43247306
+ROS 451,Red Oak,Quercus rubra,Small,CC1,4,0,3.26226,0.73774,18.4435
+ROS 437,Red Oak,Quercus rubra,Small,CC1,4,0.001,2.88231,1.11669,27.92423106
+ROS 438,Red Oak,Quercus rubra,Small,CC1,4,0.004,3.0985,0.8975,22.45995996
+ROS 447,Red Oak,Quercus rubra,Small,CC1,4,0,3.08417,0.91583,22.89575
+ROS 430,Red Oak,Quercus rubra,Small,CC1,3.993,0,3.06515,0.92785,23.2369146
+ROL 404,Red Oak,Quercus rubra,Large,W2,4.003,0.002,3.09442,0.90658,22.65883529
+ROL 406,Red Oak,Quercus rubra,Large,W2,3.998,0.003,2.88861,1.10639,27.69436796
+ROL 416,Red Oak,Quercus rubra,Large,W2,3.996,0.01,2.70925,1.27675,32.030858
+ROS 440,Red Oak,Quercus rubra,Small,W2,4,0,3.23029,0.76971,19.24275
+ROS 441,Red Oak,Quercus rubra,Small,W2,4,0,1.3647,2.6353,65.8825
+ROS 446,Red Oak,Quercus rubra,Small,W2,4,0,3.992,0.008,0.2
+ROS 429,Red Oak,Quercus rubra,Small,W2,4.005,0.006,2.53279,1.46621,36.6644161
+ROS 439,Red Oak,Quercus rubra,Small,CG3,4,0.005,3.39856,0.59644,14.92966208
+ROL 417,Red Oak,Quercus rubra,Large,CG3,4.002,0.003,3.41073,0.58827,14.71042761
+ROL 413,Red Oak,Quercus rubra,Large,CG3,4.003,0.001,3.23768,0.76432,19.09845077
+ROS 427,Red Oak,Quercus rubra,Small,CG3,3.996,0.008,3.46077,0.52723,13.22041123
+ROL 423,Red Oak,Quercus rubra,Large,CG3,4.004,0.104,3.15525,0.74475,19.09615385
+ROL 419,Red Oak,Quercus rubra,Large,CG3,3.999,0.006,3.988,0.005,0.125219133
+ROS 428,Red Oak,Quercus rubra,Small,CG3,3.994,0.004,3.36797,0.62203,15.58972431
+ROS 425,Red Oak,Quercus rubra,Small,CG3,4.004,0.016,3.984,0.004,0.100300903
+ROS 432,Red Oak,Quercus rubra,Small,BA4,3.993,0.002,3.23274,0.75826,18.99924831
+ROS 433,Red Oak,Quercus rubra,Small,BA4,3.996,0.001,3.8486,0.1464,3.664580726
+ROL 403,Red Oak,Quercus rubra,Large,BA4,3.994,0,3.53395,0.46005,11.51852779
+ROL 421,Red Oak,Quercus rubra,Large,BA4,4.002,0.001,2.88351,1.11749,27.93026743
+ROS 431,Red Oak,Quercus rubra,Small,BA4,4.004,0.001,3.47327,0.52973,13.23332501
+ROS 442,Red Oak,Quercus rubra,Small,BA4,4,0,3.87626,0.12374,3.0935
+ROL 407,Red Oak,Quercus rubra,Large,BA4,3.999,0.001,2.23521,1.76279,44.0917959
+ROL 402,Red Oak,Quercus rubra,Large,BA4,3.998,0.009,3.20974,0.77926,19.53522186
+SYC 529,Sycamore,Platanus occidentalis,Small,CC1,3.995,0.001,3.14617,0.84783,21.22759139
+SYC 506,Sycamore,Platanus occidentalis,Small,CC1,4,0.001,3.07901,0.91999,23.00550138
+SYC 525,Sycamore,Platanus occidentalis,Small,CC1,3.996,0.001,3.05438,0.94062,23.54493116
+SYC 513,Sycamore,Platanus occidentalis,Small,CC1,4,0,3.18263,0.81737,20.43425
+SYC 527,Sycamore,Platanus occidentalis,Small,CC1,4.002,0,3.00826,0.99374,24.83108446
+SYC 536,Sycamore,Platanus occidentalis,Small,W2,4.007,0,3.3926,0.6144,15.33316696
+SYC 510,Sycamore,Platanus occidentalis,Small,W2,4,0,2.89852,1.10148,27.537
+SYC 535,Sycamore,Platanus occidentalis,Small,W2,4.005,0.002,3.08225,0.92075,23.00149888
+SYC 519,Sycamore,Platanus occidentalis,Small,W2,3.997,0,2.95281,1.04419,26.12434326
+SYC 518,Sycamore,Platanus occidentalis,Small,W2,4,0,2.97435,1.02565,25.64125
+SYC 515,Sycamore,Platanus occidentalis,Small,CG3,4,0,3.45795,0.54205,13.55125
+SYC 530,Sycamore,Platanus occidentalis,Small,CG3,4.001,0,3.36641,0.63459,15.8607848
+SYC 537,Sycamore,Platanus occidentalis,Small,CG3,4.002,0.003,3.26172,0.73728,18.43660915
+SYC 516,Sycamore,Platanus occidentalis,Small,CG3,4,0,3.44608,0.55392,13.848
+SYC 508,Sycamore,Platanus occidentalis,Small,CG3,4,0.02,3.6427,0.3373,8.474874372
+SYC 503,Sycamore,Platanus occidentalis,Small,BA4,3.998,0,3.54209,0.45591,11.40345173
+SYC 501,Sycamore,Platanus occidentalis,Small,BA4,4.006,0.001,3.9416,0.0634,1.583021223
+SYC 521,Sycamore,Platanus occidentalis,Small,BA4,4.003,0,3.67362,0.32938,8.228328753
+SYC 512,Sycamore,Platanus occidentalis,Small,BA4,4,0,3.4282,0.5718,14.295
+SYC 524,Sycamore,Platanus occidentalis,Small,BA4,3.998,0,4.02635,-0.02835,-0.709104552
